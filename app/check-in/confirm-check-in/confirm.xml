@@ -1,0 +1,7 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatedTo="onNavigatingTo">
+	<GridLayout columns="*, *" rows="auto, auto">
+		<Label text="{{ message }}" row="0" col="*" />
+        <Button col="0" row="1" text="No" tap="{{ goBack }}" />
+		<Button col="1" row="1" text="Yeah!" tap="{{ checkIn }} "/>
+	</GridLayout>
+</Page>
