@@ -75,14 +75,12 @@ function createBeaconModel (findNearbyBeaconCallback) {
 
           if (item.isNearby && !beaconModel.isCheckIn(item)) {
             beaconModel.setBeacon(item);
+            beaconModel.stop();
             findNearbyBeaconCallback(beaconModel);
-            break;
+            i = beacons.length;
           }
-
-        //   beaconModel.beacons.push(item)
         }
       }
-    //   beaconModel.beacons.splice(0, beaconModel.beacons.length)
     }
   }
 

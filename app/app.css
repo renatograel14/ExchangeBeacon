@@ -8,7 +8,7 @@
 
 .checkInLayout {
     vertical-align: center;
-    background-color: #5ce500;
+    background-color: #00ab8e;
     height: 100%;
 }
 
@@ -16,21 +16,31 @@
     font-size: 25;
     padding: 5;
     text-align: center;
-    color: #373a3e
+    color: #FFF
 }
 
 button {
-    font-size: 23;
+    /*font-size: 23;
     horizontal-align: center;
     width: 100%;
-    margin: 0;
-    background: #2D7305;
-    color: #373a3e
-}
+    background-color: #43a700;
+    color: #FFF;
+    border-width: 0;*/
+    position: relative;
 
-.button-primary{
-    background-color: #2D7305;
-    color: #D5D5D8;
+    display: block;
+    margin: 30px auto;
+    padding: 0;
+
+
+    border-width: 0;
+    outline: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+    
+    background-color: #fff;
+    color: #00ab8e;
+    
+    transition: background-color .3s;
 }
 
 .message {

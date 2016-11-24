@@ -1,12 +1,9 @@
-<Page cssClass="checkInLayout" xmlns="http://schemas.nativescript.org/tns.xsd" navigatedTo="onNavigatingTo" actionBarHidden="true">
-	
-	<StackLayout>
-	<Label text="{{ message }}" cssClass="checkInMessage" />
-	<GridLayout columns="*, *" rows="auto, auto">
-	<Button col="0" row="1" text="No" tap="{{ goBack }}" />
-	<Button col="1" row="1" text="Yeah!" tap="{{ checkIn }}" cssClass="button-primary" />
-	</GridLayout>
+<Page  xmlns="http://schemas.nativescript.org/tns.xsd" navigatedTo="onNavigatingTo" actionBarHidden="true">
+	<StackLayout cssClass="checkInLayout">
+		<Label text="{{ message }}" cssClass="checkInMessage" />
+		<GridLayout columns="*, *" rows="auto, auto">
+			<Button col="0" row="1" text="No" tap="{{ goBack }}" />
+			<Button col="1" row="1" text="Check IN!" tap="{{ checkIn }}" cssClass="button-primary" />
+		</GridLayout>
 	</StackLayout>
-	
-
 </Page>

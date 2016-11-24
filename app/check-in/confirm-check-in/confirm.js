@@ -13,9 +13,8 @@ function createViewModel (context) {
 
   viewModel.checkIn = function () {
     context.start();    
-    context.checkIn()
+    context.checkIn();
     frameModule.topmost().goBack();
-
   }
   return viewModel
 }

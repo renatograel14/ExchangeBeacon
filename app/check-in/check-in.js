@@ -23,9 +23,7 @@ function pageNavigatedTo (args) {
     navigationBar.titleTextAttributes = new NSDictionary([UIColor.whiteColor()], [NSForegroundColorAttributeName])
     navigationBar.barStyle = 1
   }
-
   page.bindingContext = global.beaconsModel
-  // set event on every scan
 }
 
 exports.pageNavigatedTo = pageNavigatedTo
