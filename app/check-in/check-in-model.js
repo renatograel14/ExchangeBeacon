@@ -1,86 +1,95 @@
-var Observable = require("data/observable").Observable,
-    observableArrayModule = require("data/observable-array"),
-    Estimote = require('nativescript-estimote-sdk');
+var Observable = require('data/observable').Observable,
+  observableArrayModule = require('data/observable-array'),
+  Estimote = require('nativescript-estimote-sdk')
 
 
-function isNearby(beacon) {
-    return  beacon.rssi >= -75; 
+function dialogCallback(context){
+    console.log(context);
 }
 
+function createBeaconModel (findNearbyBeaconCallback) {
+  
+  findNearbyBeaconCallback = findNearbyBeaconCallback ? findNearbyBeaconCallback : dialogCallback;
 
-function createViewModel() {
-    var viewModel = new Observable();
+  var beaconModel = new Observable()
 
-    viewModel.beacons = new observableArrayModule.ObservableArray([]);
-    
-    viewModel.beaconsCheckIn = new observableArrayModule.ObservableArray([]);
+  beaconModel._beaconReadyToCheckIn = null
 
-    viewModel._beaconReadyToCheckIn = null;
+  beaconModel.beacons = new observableArrayModule.ObservableArray([])
 
-    viewModel.setBeacon = function(beacon){
-        viewModel._beaconReadyToCheckIn = beacon;
+  beaconModel.beaconsCheckIn = new observableArrayModule.ObservableArray([])
+
+  beaconModel._isNearby = function (beacon) {
+    return beacon.rssi >= -75
+  }
+
+  beaconModel.setBeacon = function (beacon) {
+    beaconModel._beaconReadyToCheckIn = beacon
+  }
+
+  beaconModel.getBeacon = function () {
+    return beaconModel._beaconReadyToCheckIn
+  }
+
+  beaconModel.isCheckIn = function (beacon) {
+    for (var i = 0; i < beaconModel.beaconsCheckIn.length; i++) {
+      var beaconCheckIn = beaconModel.beaconsCheckIn.getItem(i)
+      if (beaconCheckIn.identifier == beacon.identifier) {
+        return true
+      }
     }
+    return false
+  }
 
+  beaconModel.checkIn = function () {
+    var beacon = beaconModel._beaconReadyToCheckIn
+    console.log('checkIn', beacon.identifier)
+    beaconModel.beaconsCheckIn.push(beacon)
+  }
 
-    viewModel.getBeacon = function(){
-        return viewModel._beaconReadyToCheckIn;
-    }
+  beaconModel.start = function () {
+    estimoteScanner.startRanging()
+  }
 
-    viewModel.isCheckIn = function(beacon) {     
-        for (var i = 0; i < viewModel.beaconsCheckIn.length; i++) {
-            var beaconCheckIn = viewModel.beaconsCheckIn.getItem(i);
-            if(beaconCheckIn.identifier == beacon.identifier){
-                return true;
-            } 
-        }
-        return false;
-    }
+  beaconModel.stop = function () {
+    estimoteScanner.stopRanging();
+  }
 
-    viewModel.checkIn = function(){
-        var beacon = viewModel._beaconReadyToCheckIn;
-        console.log('checkIn',beacon.identifier);
-        viewModel.beaconsCheckIn.push(beacon);
-    }
+  
 
-    viewModel.start = function(){
-        estimoteScanner.startRanging();
-    }
+  var options = {
+    callback: function (beacons) {
+      for (var i = 0; i < beacons.length; i++) {
+        var beacon = beacons[i]
+        if (beacon.major > 0) {
+          var distance = beaconModel._isNearby(beacon) ? 'Nearby' : 'Away'
+          var identifier = 'Major:' + beacon.major + ' Minor:' + beacon.minor
 
-    viewModel.stop = function(){
-        estimoteScanner.stopRanging();
-    }
-
-    this.options = {
-        callback : function(beacons){
-          var items =[];
-          
-          for (var i = 0; i < beacons.length; i++) {
-             var beacon = beacons[i];
-             if (beacon.major > 0){
-               
-
-                var distance = isNearby(beacon) ? "Nearby" : "Away" ;
-                var identifier = "Major:" + beacon.major + " Minor:" + beacon.minor;
-
-
-                var item = {
-                    "identifier": identifier,
-                    "major": beacon.major,
-                    "distance":  "Distance: " + distance,
-                    "rssi": "Power: " +  beacon.rssi + "dBm",
-                    "isNearby": isNearby(beacon) 
-                };
-
-                 viewModel.beacons.push(item);
-             }
+          var item = {
+            'identifier': identifier,
+            'major': beacon.major,
+            'distance': 'Distance: ' + distance,
+            'rssi': 'Power: ' + beacon.rssi + 'dBm',
+            'isNearby': beaconModel._isNearby(beacon)
           }
-          viewModel.beacons.splice(0, viewModel.beacons.length);
+
+          if (item.isNearby && !beaconModel.isCheckIn(item)) {
+            beaconModel.setBeacon(item);
+            findNearbyBeaconCallback(beaconModel);
+            break;
+          }
+
+        //   beaconModel.beacons.push(item)
         }
-    };
+      }
+    //   beaconModel.beacons.splice(0, beaconModel.beacons.length)
+    }
+  }
 
-    estimoteScanner = new Estimote(this.options);
+  estimoteScanner = new Estimote(options)
+  estimoteScanner.startRanging();
 
-    return viewModel;
+  return beaconModel
 }
 
-exports.createViewModel = createViewModel;
+exports.createBeaconModel = createBeaconModel

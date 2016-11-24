@@ -24,30 +24,8 @@ function pageNavigatedTo (args) {
     navigationBar.barStyle = 1
   }
 
-  page.bindingContext = global.beacons
-  viewModel = page.bindingContext
-  viewModel.start()
-  var beacons = viewModel.beacons
-
+  page.bindingContext = global.beaconsModel
   // set event on every scan
-  beacons.on(observableArrayModule.ObservableArray.changeEvent, function (arg) {
-    var beaconArray = arg.object
-    beaconArray.forEach(function (b) {
-      // get nearby beacons that is not checked
-      if (b.isNearby && !viewModel.isCheckIn(b)) {
-        viewModel.stop()
-        viewModel.setBeacon(b)
-
-        frameModule.topmost().navigate({
-          moduleName: 'check-in/confirm-check-in/confirm',
-          context: {'viewModel': viewModel},
-          transition: {
-            name: 'fade'
-          }
-        })
-      }
-    })
-  })
 }
 
 exports.pageNavigatedTo = pageNavigatedTo
