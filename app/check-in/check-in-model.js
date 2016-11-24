@@ -30,10 +30,8 @@ function createViewModel() {
         for (var i = 0; i < viewModel.beaconsCheckIn.length; i++) {
             var beaconCheckIn = viewModel.beaconsCheckIn.getItem(i);
             if(beaconCheckIn.identifier == beacon.identifier){
-                console.log('isChecked', beacon.major);
                 return true;
             } 
-    
         }
         return false;
     }
@@ -43,7 +41,6 @@ function createViewModel() {
         console.log('checkIn',beacon.identifier);
         viewModel.beaconsCheckIn.push(beacon);
     }
-
 
     viewModel.start = function(){
         estimoteScanner.startRanging();
@@ -57,7 +54,6 @@ function createViewModel() {
         callback : function(beacons){
           var items =[];
           
-
           for (var i = 0; i < beacons.length; i++) {
              var beacon = beacons[i];
              if (beacon.major > 0){
@@ -75,18 +71,14 @@ function createViewModel() {
                     "isNearby": isNearby(beacon) 
                 };
 
-                // if(item.isNearby ) viewModel.checkIn(item);
-
-                items.push(item);
+                 viewModel.beacons.push(item);
              }
           }
-          viewModel.beacons.splice(new observableArrayModule.ObservableArray(items));
-        //   viewModel.set('beacons',  new observableArrayModule.ObservableArray(items));
+          viewModel.beacons.splice(0, viewModel.beacons.length);
         }
     };
 
     estimoteScanner = new Estimote(this.options);
-    estimoteScanner.startRanging();
 
     return viewModel;
 }

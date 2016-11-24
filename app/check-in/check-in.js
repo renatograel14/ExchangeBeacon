@@ -4,8 +4,7 @@ var frameModule = require('ui/frame')
 var createViewModel = require('./check-in-model').createViewModel
 var timer = require('timer')
 
-
-function pageLoaded (args) {
+function pageNavigatedTo (args) {
   var page = args.object
   if (page.ios) {
     var controller = frameModule.topmost().ios.controller
@@ -25,28 +24,30 @@ function pageLoaded (args) {
     navigationBar.barStyle = 1
   }
 
-  page.bindingContext = createViewModel()
+  page.bindingContext = global.beacons
   viewModel = page.bindingContext
+  viewModel.start()
   var beacons = viewModel.beacons
 
   // set event on every scan
   beacons.on(observableArrayModule.ObservableArray.changeEvent, function (arg) {
-    var beaconArray = arg.index
+    var beaconArray = arg.object
     beaconArray.forEach(function (b) {
-          // get nearby beacons that is not checked
+      // get nearby beacons that is not checked
       if (b.isNearby && !viewModel.isCheckIn(b)) {
-        
-        viewModel.stop();
-        viewModel.setBeacon(b);
-        
+        viewModel.stop()
+        viewModel.setBeacon(b)
+
         frameModule.topmost().navigate({
           moduleName: 'check-in/confirm-check-in/confirm',
-          context: {"viewModel": viewModel}
+          context: {'viewModel': viewModel},
+          transition: {
+            name: 'fade'
+          }
         })
-
       }
     })
   })
 }
 
-exports.pageLoaded = pageLoaded
+exports.pageNavigatedTo = pageNavigatedTo

@@ -1,13 +1,36 @@
 ﻿
 .title {
-    font-size: 21;
+    font-size: 19;
     horizontal-align: left;
     padding: 5;
+}
+
+
+.checkInLayout {
+    vertical-align: center;
+    background-color: #5ce500;
+    height: 100%;
+}
+
+.checkInMessage {
+    font-size: 25;
+    padding: 5;
+    text-align: center;
+    color: #373a3e
 }
 
 button {
     font-size: 23;
     horizontal-align: center;
+    width: 100%;
+    margin: 0;
+    background: #2D7305;
+    color: #373a3e
+}
+
+.button-primary{
+    background-color: #2D7305;
+    color: #D5D5D8;
 }
 
 .message {
